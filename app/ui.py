@@ -1,4 +1,4 @@
-from tkinter import Button, END, Entry, Label, StringVar, Tk, Toplevel, messagebox
+from tkinter import Button, END, Entry, Label, LabelFrame, StringVar, Tk, Toplevel, messagebox
 
 from app.auth_service import AuthService, HANDLED_AUTH_ERRORS
 
@@ -39,113 +39,133 @@ class FaceLoginUI:
     def _open_register(self) -> None:
         window = Toplevel(self.root)
         window.title("Registro")
-        window.geometry("340x420")
+        window.geometry("360x520")
+
         username = StringVar()
         password = StringVar()
 
-        Label(window, text="Registro facial: ingresa un usuario.").pack()
-        Label(window, text="Registro tradicional: usuario y contrasena.").pack()
-        Label(window, text="").pack()
-        Label(window, text="Usuario *").pack()
-        username_entry = Entry(window, textvariable=username)
-        username_entry.pack()
-        Label(window, text="Contrasena *").pack()
-        password_entry = Entry(window, textvariable=password, show="*")
-        password_entry.pack()
-        Label(window, text="").pack()
+        Label(window, text="Usuario *", font=("Calibri", 11, "bold")).pack(pady=(8, 0))
+        Entry(window, textvariable=username, width=32).pack(pady=(2, 12))
 
-        status = Label(window, text="", wraplength=300, justify="left", fg="black")
-        status.pack(pady=6)
-
+        trad_frame = LabelFrame(window, text="Registro Tradicional", padx=8, pady=6)
+        trad_frame.pack(fill="x", padx=12, pady=(0, 8))
+        Label(trad_frame, text="Contrasena *").pack()
+        Entry(trad_frame, textvariable=password, show="*", width=28).pack(pady=(2, 6))
         Button(
-            window,
-            text="Registro Tradicional",
-            width=18,
+            trad_frame,
+            text="Registrar con usuario + contrasena",
+            width=30,
             command=lambda: self._execute_action(
                 action=lambda: self.auth_service.register_password(username.get(), password.get()),
                 status_label=status,
-                username_entry=username_entry,
-                password_entry=password_entry,
+                username_var=username,
+                password_var=password,
                 owner=window,
             ),
-        ).pack(pady=2)
+        ).pack(pady=(4, 2))
+
+        face_frame = LabelFrame(window, text="Registro Facial", padx=8, pady=6)
+        face_frame.pack(fill="x", padx=12, pady=(0, 8))
+        Label(
+            face_frame,
+            text="Solo necesitas un usuario.\nNo requiere contrasena.",
+            wraplength=280,
+            justify="left",
+            fg="gray30",
+        ).pack(pady=(2, 6))
         Button(
-            window,
-            text="Registro Facial",
-            width=18,
+            face_frame,
+            text="Registrar con rostro",
+            width=30,
             command=lambda: self._execute_action(
                 action=lambda: self.auth_service.register_face(username.get()),
                 status_label=status,
-                username_entry=username_entry,
-                password_entry=password_entry,
+                username_var=username,
+                password_var=password,
                 clear_password=False,
                 owner=window,
             ),
-        ).pack(pady=2)
+        ).pack(pady=(2, 4))
+
         Label(
             window,
             text="Presiona Esc para capturar o\ncierra la ventana de camara para cancelar.",
             wraplength=300,
-        ).pack(pady=12)
+            fg="gray40",
+            font=("Calibri", 8),
+        ).pack(pady=(4, 6))
+
+        status = Label(window, text="", wraplength=300, justify="left", fg="black")
+        status.pack(pady=(0, 8))
 
     def _open_login(self) -> None:
         window = Toplevel(self.root)
         window.title("Login")
-        window.geometry("340x420")
+        window.geometry("360x520")
+
         username = StringVar()
         password = StringVar()
 
-        Label(window, text="Login facial: ingresa tu usuario.").pack()
-        Label(window, text="Login tradicional: usuario y contrasena.").pack()
-        Label(window, text="").pack()
-        Label(window, text="Usuario *").pack()
-        username_entry = Entry(window, textvariable=username)
-        username_entry.pack()
-        Label(window, text="Contrasena *").pack()
-        password_entry = Entry(window, textvariable=password, show="*")
-        password_entry.pack()
-        Label(window, text="").pack()
+        Label(window, text="Usuario *", font=("Calibri", 11, "bold")).pack(pady=(8, 0))
+        Entry(window, textvariable=username, width=32).pack(pady=(2, 12))
 
-        status = Label(window, text="", wraplength=300, justify="left", fg="black")
-        status.pack(pady=6)
-
+        trad_frame = LabelFrame(window, text="Login Tradicional", padx=8, pady=6)
+        trad_frame.pack(fill="x", padx=12, pady=(0, 8))
+        Label(trad_frame, text="Contrasena *").pack()
+        Entry(trad_frame, textvariable=password, show="*", width=28).pack(pady=(2, 6))
         Button(
-            window,
-            text="Inicio Tradicional",
-            width=18,
+            trad_frame,
+            text="Iniciar con contrasena",
+            width=30,
             command=lambda: self._execute_action(
                 action=lambda: self.auth_service.login_password(username.get(), password.get()),
                 status_label=status,
-                username_entry=username_entry,
-                password_entry=password_entry,
+                username_var=username,
+                password_var=password,
                 owner=window,
             ),
-        ).pack(pady=2)
+        ).pack(pady=(4, 2))
+
+        face_frame = LabelFrame(window, text="Login Facial", padx=8, pady=6)
+        face_frame.pack(fill="x", padx=12, pady=(0, 8))
+        Label(
+            face_frame,
+            text="Solo necesitas tu rostro.\nNo requiere contrasena.",
+            wraplength=280,
+            justify="left",
+            fg="gray30",
+        ).pack(pady=(2, 6))
         Button(
-            window,
-            text="Inicio Facial",
-            width=18,
+            face_frame,
+            text="Iniciar con rostro",
+            width=30,
             command=lambda: self._execute_action(
                 action=lambda: self.auth_service.login_face(username.get()),
                 status_label=status,
-                username_entry=username_entry,
-                password_entry=password_entry,
+                username_var=username,
+                password_var=password,
                 clear_password=False,
                 owner=window,
             ),
-        ).pack(pady=2)
+        ).pack(pady=(2, 4))
+
         Label(
             window,
             text="Presiona Esc para capturar o\ncierra la ventana de camara para cancelar.",
             wraplength=300,
-        ).pack(pady=12)
+            fg="gray40",
+            font=("Calibri", 8),
+        ).pack(pady=(4, 6))
+
+        status = Label(window, text="", wraplength=300, justify="left", fg="black")
+        status.pack(pady=(0, 8))
 
     def _execute_action(
         self,
         action,
         status_label: Label,
-        username_entry: Entry,
-        password_entry: Entry,
+        username_var: StringVar,
+        password_var: StringVar,
         owner: Toplevel,
         clear_password: bool = True,
     ) -> None:
@@ -157,6 +177,6 @@ class FaceLoginUI:
         else:
             status_label.config(text=message, fg="green")
             messagebox.showinfo("Exito", message, parent=owner)
-            username_entry.delete(0, END)
+            username_var.set("")
             if clear_password:
-                password_entry.delete(0, END)
+                password_var.set("")

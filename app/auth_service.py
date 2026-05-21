@@ -26,8 +26,13 @@ class AuthService:
         username = self._validate_username(username)
         self.database.upsert_user(username)
 
-        frame = self.camera_service.capture_frame()
+        frame, _ = self.camera_service.capture_frame(
+            face_detector=self.face_service.detect_faces,
+            face_drawer=self.face_service.draw_preview,
+        )
+
         face_image, embedding = self.face_service.extract_face_data(frame)
+
         image_path = self.face_service.save_face_image(username, face_image)
         self.database.update_face_data(username, image_path, embedding)
         return "Registro facial completado."
@@ -58,8 +63,13 @@ class AuthService:
             self.database.record_auth_attempt(username, "face", False, "rostro_no_registrado")
             raise ValueError("El usuario no tiene rostro registrado.")
 
-        frame = self.camera_service.capture_frame()
+        frame, _ = self.camera_service.capture_frame(
+            face_detector=self.face_service.detect_faces,
+            face_drawer=self.face_service.draw_preview,
+        )
+
         _, candidate_embedding = self.face_service.extract_face_data(frame)
+
         stored_embedding = json.loads(user["face_embedding"])
         is_match = self.face_service.verify_face(stored_embedding, candidate_embedding)
         if not is_match:
